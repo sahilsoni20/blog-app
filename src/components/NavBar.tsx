@@ -16,15 +16,15 @@ export function NavBar({ isUserSignedIn }: NavBarProps) {
   };
 
   return (
-    <nav className="flex w-full bg-white h-7">
-      <NavLink to="/">Home</NavLink>
+    <nav className="flex justify-around text-center items-center w-full bg-white h-20 text-2xl">
+      <NavLink to="/" className="hover:text-blue-400 hover:underline ">Home</NavLink>
       {isUserSignedIn === true ? (
         <>
           <NavLink to="/createPost">Create Post</NavLink>
-          <button onClick={userSignOut}>Log Out</button>
+          <button onClick={userSignOut} className="hover:text-blue-300 hover:underline ">Log Out</button>
         </>
       ) : (
-        <NavLink to="/login">Login</NavLink>
+        <NavLink to="/login" className="hover:text-blue-300 hover:underline ">Login</NavLink>
       )}
     </nav>
   );
