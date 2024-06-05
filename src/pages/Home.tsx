@@ -52,7 +52,7 @@ export function Home() {
           <div key={id}>
             <header>
               <h1>{title}</h1>
-              {author.id === firebaseAuth.currentUser?.uid && (
+              {author.id === Number(firebaseAuth.currentUser?.uid) && ( 
                 <button
                   onClick={() => {
                     deletePost(id);
