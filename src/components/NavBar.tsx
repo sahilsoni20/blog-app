@@ -8,7 +8,7 @@ type NavBarProps = {
 
 export function NavBar({ isUserSignedIn }: NavBarProps) {
   const navigate = useNavigate();
-
+  
   const userSignOut = () => {
     signOut(firebaseAuth).then(() => {
       navigate("/login");
