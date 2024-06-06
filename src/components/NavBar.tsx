@@ -20,7 +20,7 @@ export function NavBar({ isUserSignedIn }: NavBarProps) {
       <NavLink to="/" className="hover:text-blue-400 hover:underline ">Home</NavLink>
       {isUserSignedIn === true ? (
         <>
-          <NavLink to="/createPost">Create Post</NavLink>
+          <NavLink to="/createPost" className="hover:text-blue-300 hover:underline " >Create Post</NavLink>
           <button onClick={userSignOut} className="hover:text-blue-300 hover:underline ">Log Out</button>
         </>
       ) : (

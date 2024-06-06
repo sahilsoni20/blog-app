@@ -5,55 +5,61 @@ import {
   CollectionReference,
   onSnapshot,
   deleteDoc,
+  doc,
   updateDoc,
-  doc, // Import the 'doc' function
 } from "firebase/firestore";
 import { firebaseAuth, firebaseDb } from "../lib/FireBase";
 
 type Post = {
   heart: number;
-  author: { id: number; name: string };
+  author: { id: string; name: string };
   id: string;
   postText: string;
   title: string;
 };
 
 export function Home() {
-  const [post, setPost] = useState<Post[]>([]);
-  const postCollectionRef = collection(
+  const [posts, setPosts] = useState<Post[]>([]);
+  const postsCollectionRef = collection(
     firebaseDb,
     "posts"
   ) as CollectionReference<Post>;
 
   useEffect(() => {
-    const getPost = () => {
-      onSnapshot(postCollectionRef, (snapshot) =>
-        setPost(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
+    const getPosts = () => {
+      onSnapshot(postsCollectionRef, (snapshot) =>
+        setPosts(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
       );
     };
-    getPost();
+    getPosts();
   }, []);
 
-  const deletePost = (id: string) => {
-    const postDoc = doc(firebaseDb, `posts/${id}`); // Correct the path to 'posts'
+  const deletePost = (id: unknown) => {
+    const postDoc = doc(firebaseDb, `posts/${id}`);
     deleteDoc(postDoc);
   };
 
   const likePost = (id: string, heart: number) => {
-    const postDoc = doc(firebaseDb, `posts/${id}`); // Correct the path to 'posts'
-    const updatedHeart = { heart: heart + 1 };
-    updateDoc(postDoc, updatedHeart); // Pass the updated fields as the second argument
+    const postDoc = doc(firebaseDb, `posts/${id}`);
+    const giveLikes = { heart: heart + 1 };
+    updateDoc(postDoc, giveLikes);
   };
 
   return (
-    <div>
-      {post.map(({ title, id, postText, author, heart }) => {
+    <div className="max-w-[100%] h-auto flex pt-[90px] items-center flex-col relative">
+      {posts.map(({ title, id, postText, author, heart }) => {
         return (
-          <div key={id}>
-            <header>
-              <h1>{title}</h1>
-              {author.id === Number(firebaseAuth.currentUser?.uid) && ( 
+          <div
+            key={id}
+            className="p-[20px] bg-white rounded-lg shadow-md border border-[#eee]  my-[10px] max-w-[350px]"
+          >
+            <header className="flex items-baseline justify-flex-start">
+              <h1 className="w-[350px] font-[500] text-[1.1rem] leading-tight  text-[#4e4d52]">
+                {title}
+              </h1>
+              {author.id === firebaseAuth.currentUser?.uid && (
                 <button
+                  className="p-[3px] flex ml-[10px] text-[1.1rem] border-2 border-[#e9e9e9] text-[#9A999E] bg-[#EEEEEE] rounded "
                   onClick={() => {
                     deletePost(id);
                   }}
@@ -62,17 +68,22 @@ export function Home() {
                 </button>
               )}
             </header>
-            <div></div>
-            <div>
-              <p>{postText}</p>
+            <div className="h-px w-full mb-[10px] mt-[8px] bg-[#ddd]"></div>
+            <div className="post__text">
+              <p className="w-[100%] h-auto  max-h-[300px] overflow-y-scroll text-[1rem] text-[#9A999E] pb-[30px] break-all text-[#4e4d52 ">
+                {postText}
+              </p>
             </div>
-            <div>
-              <span>Author: {author.name}</span>
-              <div>
+            <div className="flex justify-between items-baseline">
+              <span className="font-[500] italic text-[.9rem] text-[#4e4d52]">
+                Author: {author.name}
+              </span>
+              <div className="flex flex-row-reverse	 items-center">
                 {author.id === firebaseAuth.currentUser?.uid ? (
                   ""
                 ) : (
                   <button
+                    className="p-[3px] flex ml-[10px] text-[.9rem] border-2 border-[#e9e9e9] text-[#9A999E] bg-[#EEEEEE] rounded "
                     onClick={() => {
                       likePost(id, heart);
                     }}
@@ -80,10 +91,10 @@ export function Home() {
                     <IoIosHeart />
                   </button>
                 )}
-                <p>
+                <p className="flex items-center  text-[#4e4d52]">
                   {heart}
                   {author.id === firebaseAuth.currentUser?.uid ? (
-                    <IoIosHeart />
+                    <IoIosHeart className="ml-[10px]" />
                   ) : (
                     ""
                   )}
